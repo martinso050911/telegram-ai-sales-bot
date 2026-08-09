@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Админ-Панель — AI Sales Pro</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/admin.css">
+</head>
+<body>
+    <div class="admin-wrapper">
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <span>⚡ AI Sales <span class="highlight">Admin</span></span>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="#leads-section" class="nav-item active">📊 Заявки (Лиды)</a>
+                <a href="#prompt-section" class="nav-item">🤖 Настройка Gemini AI</a>
+                <a href="#chats-section" class="nav-item">💬 Логи Диалогов</a>
+                <a href="/" class="nav-item">🌐 Перейти на Сайт</a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <header class="topbar">
+                <h2>Панель Управления Продажами</h2>
+                <div class="user-info">Администратор (admin)</div>
+            </header>
+
+            <div class="container">
+                <!-- Stats Overview -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-title">Всего Заявок</div>
+                        <div class="stat-value">{{ leads|length }}</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-title">Сообщений в чатах</div>
+                        <div class="stat-value">{{ messages|length }}</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-title">Модель AI</div>
+                        <div class="stat-value small">Google Gemini 2.5</div>
+                    </div>
+                </div>
+
+                <!-- Leads Table Section -->
+                <section id="leads-section" class="admin-section">
+                    <div class="section-header">
+                        <h3>📋 Список Заявок с Сайта</h3>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Дата</th>
+                                    <th>Имя</th>
+                                    <th>Телефон</th>
+                                    <th>Email</th>
+                                    <th>Компания</th>
+                                    <th>Сообщение</th>
+                                    <th>Статус</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for lead in leads %}
+                                <tr>
+                                    <td>#{{ lead.id }}</td>
+                                    <td>{{ lead.created_at.strftime('%d.%m.%Y %H:%M') }}</td>
+                                    <td><strong>{{ lead.name }}</strong></td>
+                                    <td><a href="tel:{{ lead.phone }}">{{ lead.phone }}</a></td>
+                                    <td>{{ lead.email or '—' }}</td>
+                                    <td>{{ lead.company or '—' }}</td>
+                                    <td class="msg-cell">{{ lead.message or '—' }}</td>
+                                    <td>
+                                        <span class="status-badge status-{{ lead.status }}">{{ lead.status }}</span>
+                                    </td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="8" class="text-center">Заявок пока нет</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Gemini Prompt Configuration Section -->
+                <section id="prompt-section" class="admin-section">
+                    <div class="section-header">
+                        <h3>🤖 Системный Промпт Gemini AI Консультанта</h3>
+                        <p>Вы можете изменить поведение и инструкции AI-консультанта в реальном времени.</p>
+                    </div>
+                    <div class="prompt-box">
+                        {% if prompt_saved %}
+                        <div class="alert alert-success">✅ Системный промпт успешно обновлен!</div>
+                        {% endif %}
+                        <form action="/admin/prompt" method="POST">
+                            <div class="form-group">
+                                <label for="prompt_text">Инструкции для Google Gemini:</label>
+                                <textarea id="prompt_text" name="prompt_text" rows="12" required>{{ current_prompt }}</textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Сохранить Новый Промпт 💾</button>
+                        </form>
+                    </div>
+                </section>
+
+                <!-- Chat History Logs -->
+                <section id="chats-section" class="admin-section">
+                    <div class="section-header">
+                        <h3>💬 История Чатов (Веб и Telegram)</h3>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Время</th>
+                                    <th>Сессия / User ID</th>
+                                    <th>Канал</th>
+                                    <th>Отправитель</th>
+                                    <th>Сообщение</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for msg in messages %}
+                                <tr>
+                                    <td>#{{ msg.id }}</td>
+                                    <td>{{ msg.timestamp.strftime('%d.%m %H:%M:%S') }}</td>
+                                    <td><code>{{ msg.session_id }}</code></td>
+                                    <td><span class="channel-tag tag-{{ msg.source }}">{{ msg.source }}</span></td>
+                                    <td><strong>{{ msg.sender }}</strong></td>
+                                    <td>{{ msg.content }}</td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="6" class="text-center">История диалогов пуста</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

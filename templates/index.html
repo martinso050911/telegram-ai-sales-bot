@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Sales Pro — ИИ-платформа Автоматизации Продаж для B2B</title>
+    <meta name="description" content="Увеличьте конверсию B2B продаж в 3 раза с помощью автономного AI-консультанта на базе Google Gemini.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header class="header">
+        <div class="container nav-container">
+            <div class="logo">
+                <span class="logo-icon">⚡</span>
+                <span class="logo-text">AI Sales <span class="highlight">Pro</span></span>
+            </div>
+            <nav class="nav">
+                <a href="#features">Преимущества</a>
+                <a href="#pricing">Тарифы</a>
+                <a href="#contact">Заявка</a>
+                <a href="/admin" class="btn btn-outline">Войти в Админку</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container hero-grid">
+            <div class="hero-content">
+                <div class="badge">🚀 B2B Платформа Нового Поколения</div>
+                <h1 class="hero-title">Автономный <span class="gradient-text">AI-Консультант</span> по Продажам для вашего Бизнеса</h1>
+                <p class="hero-subtitle">Увеличьте конверсию сайта и Telegram-канала на 300%. Наш ИИ выявляет боли клиентов, квалифицирует лиды и передает их в отдел продаж 24/7.</p>
+                <div class="hero-actions">
+                    <a href="#contact" class="btn btn-primary btn-large">Оставить заявку на Демо</a>
+                    <button id="open-chat-btn" class="btn btn-secondary btn-large">💬 Попробовать AI-чат</button>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <span class="stat-num">24/7</span>
+                        <span class="stat-desc">Без перерывов</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-num">&lt; 3 сек</span>
+                        <span class="stat-desc">Отклик клиента</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-num">+340%</span>
+                        <span class="stat-desc">Рост заявок</span>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-card">
+                <div class="glass-card">
+                    <div class="card-header">
+                        <div class="status-indicator"></div>
+                        <span>AI Sales Assistant Active</span>
+                    </div>
+                    <div class="demo-chat-box">
+                        <div class="chat-bubble bot-bubble">
+                            👋 Здравствуйте! Чем я могу помочь развитию вашего B2B бизнеса сегодня?
+                        </div>
+                        <div class="chat-bubble user-bubble">
+                            Мы ищем решение для автоматизации приема заявок 24/7.
+                        </div>
+                        <div class="chat-bubble bot-bubble">
+                            Отличное решение! Наш AI-консультант квалифицирует клиента, предлагает подходящий тариф и мгновенно отправляет готовую заявку вам в Telegram.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <div class="section-header">
+                <h2>Почему компании выбирают <span class="gradient-text">AI Sales Pro</span></h2>
+                <p>Единый комплекс автоматизации коммуникации на веб-сайте и в мессенджерах</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🤖</div>
+                    <h3>Google Gemini AI</h3>
+                    <p>Интеллектуальная языковая модель нового поколения с динамическим промптом консультанта по продажам.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3>Telegram Синхронизация</h3>
+                    <p>Все заявки клиентов с веб-сайта автоматически приходят вам в личные сообщения Telegram.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>База Данных & Админка</h3>
+                    <p>Удобная панель управления /admin для мониторинга лидов, истории чатов и настройки промпта.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="pricing">
+        <div class="container">
+            <div class="section-header">
+                <h2>Прозрачные Тарифные Планы</h2>
+                <p>Выберите подходящий пакет для вашей команды</p>
+            </div>
+            <div class="pricing-grid">
+                <div class="price-card">
+                    <h3>Старт</h3>
+                    <div class="price">4 900 <span>/ мес</span></div>
+                    <ul class="price-features">
+                        <li>✓ До 1 000 чат-сессий в месяц</li>
+                        <li>✓ Telegram-бот для приема заявок</li>
+                        <li>✓ Базовая аналитика</li>
+                    </ul>
+                    <a href="#contact" class="btn btn-outline btn-full">Выбрать Тариф</a>
+                </div>
+                <div class="price-card featured">
+                    <div class="popular-badge">Популярный</div>
+                    <h3>Бизнес Pro</h3>
+                    <div class="price">12 900 <span>/ мес</span></div>
+                    <ul class="price-features">
+                        <li>✓ Безлимитные чат-сессии</li>
+                        <li>✓ Веб-виджет + Telegram бот</li>
+                        <li>✓ Админ-панель управления</li>
+                        <li>✓ Уведомления лидов в Telegram</li>
+                    </ul>
+                    <a href="#contact" class="btn btn-primary btn-full">Подключить Pro</a>
+                </div>
+                <div class="price-card">
+                    <h3>Enterprise</h3>
+                    <div class="price">Индивидуально</div>
+                    <ul class="price-features">
+                        <li>✓ Интеграция с вашей CRM (Bitrix/amoCRM)</li>
+                        <li>✓ Кастомное обучение модели</li>
+                        <li>✓ Персональный менеджер 24/7</li>
+                    </ul>
+                    <a href="#contact" class="btn btn-outline btn-full">Связаться</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact & Lead Form Section -->
+    <section id="contact" class="contact-section">
+        <div class="container">
+            <div class="contact-box">
+                <div class="contact-info">
+                    <h2>Готовы масштабировать продажи?</h2>
+                    <p>Заполните форму, и наш AI-консультант вместе с менеджером подготовят персональное демо для вашего бизнеса.</p>
+                    <div class="contact-details">
+                        <div class="detail-item">📍 Москва, Пресненская наб. 12</div>
+                        <div class="detail-item">📧 contact@aisalespro.b2b</div>
+                        <div class="detail-item">💬 Telegram Bot: @AI_Sales_Consultant_Bot</div>
+                    </div>
+                </div>
+                <div class="form-card">
+                    <h3>Оставить заявку на Демо</h3>
+                    <form id="lead-form">
+                        <div class="form-group">
+                            <label for="name">Ваше имя *</label>
+                            <input type="text" id="name" name="name" placeholder="Иван Иванов" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Номер телефона *</label>
+                            <input type="tel" id="phone" name="phone" placeholder="+7 (999) 000-00-00" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" placeholder="ivan@company.com">
+                        </div>
+                        <div class="form-group">
+                            <label for="company">Название компании</label>
+                            <input type="text" id="company" name="company" placeholder="ООО Вектор">
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Комментарий / Задача</label>
+                            <textarea id="message" name="message" rows="3" placeholder="Расскажите о вашей задаче..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-full">Отправить заявку 🚀</button>
+                    </form>
+                    <div id="form-alert" class="alert hidden"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container footer-content">
+            <p>© 2026 AI Sales Pro. Все права защищены.</p>
+            <p><a href="/admin">Вход для Администратора</a></p>
+        </div>
+    </footer>
+
+    <!-- Floating AI Chat Widget -->
+    <div id="chat-widget-container" class="chat-widget-container">
+        <button id="chat-toggle-btn" class="chat-toggle-btn">
+            <span class="icon-open">💬</span>
+            <span class="icon-close hidden">✖</span>
+        </button>
+        <div id="chat-window" class="chat-window hidden">
+            <div class="chat-header">
+                <div class="chat-title">
+                    <span class="online-dot"></span>
+                    <span>AI Консультант по Продажам</span>
+                </div>
+                <button id="chat-close-btn" class="chat-close-btn">✖</button>
+            </div>
+            <div id="chat-messages" class="chat-messages">
+                <div class="msg bot-msg">
+                    👋 Здравствуйте! Я ваш AI-консультант по B2B решениям. Задайте мне любой вопрос по продуктам и ценам!
+                </div>
+            </div>
+            <div class="chat-input-area">
+                <input type="text" id="chat-input" placeholder="Введите ваш вопрос..." autocomplete="off">
+                <button id="chat-send-btn" class="chat-send-btn">➤</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/lead_form.js"></script>
+    <script src="/static/js/chat_widget.js"></script>
+</body>
+</html>
