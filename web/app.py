@@ -1,4 +1,5 @@
 import logging
+from typing import Optional
 from pathlib import Path
 from fastapi import APIRouter, Request, Depends, HTTPException, Form
 from fastapi.responses import HTMLResponse
@@ -22,9 +23,9 @@ web_router = APIRouter()
 class LeadCreate(BaseModel):
     name: str
     phone: str
-    email: str | None = None
-    company: str | None = None
-    message: str | None = None
+    email: Optional[str] = None
+    company: Optional[str] = None
+    message: Optional[str] = None
 
 class ChatRequest(BaseModel):
     session_id: str
@@ -107,7 +108,7 @@ async def admin_dashboard(request: Request, prompt_saved: bool = False, db: Asyn
 
 @web_router.post("/admin/prompt")
 async def update_admin_prompt(request: Request, prompt_text: str = Form(...)):
-    """Form handler for updating Gemini System Prompt in database."""
+    """Form handler for updating System Prompt in database."""
     await ai_service.update_system_prompt(prompt_text)
     return templates.TemplateResponse(
         request=request,
