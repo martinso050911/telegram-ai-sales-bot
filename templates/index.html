@@ -4,11 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Sales Pro — ИИ-платформа Автоматизации Продаж для B2B</title>
-    <meta name="description" content="Увеличьте конверсию B2B продаж в 3 раза с помощью автономного AI-консультанта на базе Google Gemini.">
+    <meta name="description" content="Увеличьте конверсию B2B продаж в 3 раза с помощью автономного AI-консультанта на базе Groq Llama-3.3.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+        .user-nav-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .user-badge {
+            background: rgba(99, 102, 241, 0.15);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            color: #a5b4fc;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        .role-tag {
+            background: #6366f1;
+            color: #fff;
+            padding: 2px 6px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            margin-left: 4px;
+        }
+    </style>
 </head>
 <body>
 
@@ -23,7 +48,21 @@
                 <a href="#features">Преимущества</a>
                 <a href="#pricing">Тарифы</a>
                 <a href="#contact">Заявка</a>
-                <a href="/admin" class="btn btn-outline">Войти в Админку</a>
+                <div class="user-nav-group">
+                    {% if current_user %}
+                        {% if current_user.role == 'admin' %}
+                        <a href="/admin" class="btn btn-outline">⚙️ Админ-Панель</a>
+                        {% endif %}
+                        <span class="user-badge">
+                            👤 {{ current_user.username }}
+                            <span class="role-tag">{{ current_user.role }}</span>
+                        </span>
+                        <a href="/logout" class="btn btn-secondary">Выйти</a>
+                    {% else %}
+                        <a href="/login" class="btn btn-outline">Войти</a>
+                        <a href="/register" class="btn btn-primary">Регистрация</a>
+                    {% endif %}
+                </div>
             </nav>
         </div>
     </header>
@@ -86,8 +125,8 @@
             <div class="features-grid">
                 <div class="feature-card">
                     <div class="feature-icon">🤖</div>
-                    <h3>Google Gemini AI</h3>
-                    <p>Интеллектуальная языковая модель нового поколения с динамическим промптом консультанта по продажам.</p>
+                    <h3>Groq Llama 3.3 AI</h3>
+                    <p>Высокоскоростная модель нейросети с динамическим промптом консультанта по продажам.</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">📱</div>
@@ -95,9 +134,9 @@
                     <p>Все заявки клиентов с веб-сайта автоматически приходят вам в личные сообщения Telegram.</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">📊</div>
-                    <h3>База Данных & Админка</h3>
-                    <p>Удобная панель управления /admin для мониторинга лидов, истории чатов и настройки промпта.</p>
+                    <div class="feature-icon">🔐</div>
+                    <h3>Авторизация & Админка</h3>
+                    <p>Защищенная роль-система /admin для мониторинга лидов, истории чатов и управления промптом.</p>
                 </div>
             </div>
         </div>
@@ -126,9 +165,9 @@
                     <h3>Бизнес Pro</h3>
                     <div class="price">12 900 <span>/ мес</span></div>
                     <ul class="price-features">
-                        <li>✓ Безлимитные чат-сессии</li>
+                        <li>✓ Безлимитные чат-сессий</li>
                         <li>✓ Веб-виджет + Telegram бот</li>
-                        <li>✓ Админ-панель управления</li>
+                        <li>✓ Защищенная админ-панель</li>
                         <li>✓ Уведомления лидов в Telegram</li>
                     </ul>
                     <a href="#contact" class="btn btn-primary btn-full">Подключить Pro</a>
@@ -195,7 +234,13 @@
     <footer class="footer">
         <div class="container footer-content">
             <p>© 2026 AI Sales Pro. Все права защищены.</p>
-            <p><a href="/admin">Вход для Администратора</a></p>
+            {% if current_user and current_user.role == 'admin' %}
+            <p><a href="/admin">⚙️ Панель Администратора</a> | <a href="/logout">Выйти</a></p>
+            {% elif current_user %}
+            <p>Вы вошли как <strong>{{ current_user.username }}</strong> | <a href="/logout">Выйти</a></p>
+            {% else %}
+            <p><a href="/login">Вход в систему</a> | <a href="/register">Регистрация</a></p>
+            {% endif %}
         </div>
     </footer>
 

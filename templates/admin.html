@@ -8,6 +8,28 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/admin.css">
+    <style>
+        .user-topbar-group {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .logout-btn {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            color: #ef4444;
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .logout-btn:hover {
+            background: #ef4444;
+            color: #fff;
+        }
+    </style>
 </head>
 <body>
     <div class="admin-wrapper">
@@ -17,16 +39,20 @@
             </div>
             <nav class="sidebar-nav">
                 <a href="#leads-section" class="nav-item active">📊 Заявки (Лиды)</a>
-                <a href="#prompt-section" class="nav-item">🤖 Настройка Gemini AI</a>
+                <a href="#prompt-section" class="nav-item">🤖 Настройка AI Промпта</a>
                 <a href="#chats-section" class="nav-item">💬 Логи Диалогов</a>
                 <a href="/" class="nav-item">🌐 Перейти на Сайт</a>
+                <a href="/logout" class="nav-item" style="color: #ef4444;">🚪 Выход</a>
             </nav>
         </aside>
 
         <main class="main-content">
             <header class="topbar">
                 <h2>Панель Управления Продажами</h2>
-                <div class="user-info">Администратор (admin)</div>
+                <div class="user-topbar-group">
+                    <div class="user-info">👤 Администратор: <strong>{{ current_user.username }}</strong></div>
+                    <a href="/logout" class="logout-btn">Выйти 🚪</a>
+                </div>
             </header>
 
             <div class="container">
@@ -42,7 +68,7 @@
                     </div>
                     <div class="stat-card">
                         <div class="stat-title">Модель AI</div>
-                        <div class="stat-value small">Google Gemini 2.5</div>
+                        <div class="stat-value small">Groq Llama 3.3 70B</div>
                     </div>
                 </div>
 
@@ -89,10 +115,10 @@
                     </div>
                 </section>
 
-                <!-- Gemini Prompt Configuration Section -->
+                <!-- Prompt Configuration Section -->
                 <section id="prompt-section" class="admin-section">
                     <div class="section-header">
-                        <h3>🤖 Системный Промпт Gemini AI Консультанта</h3>
+                        <h3>🤖 Системный Промпт AI Консультанта (Groq)</h3>
                         <p>Вы можете изменить поведение и инструкции AI-консультанта в реальном времени.</p>
                     </div>
                     <div class="prompt-box">
@@ -101,7 +127,7 @@
                         {% endif %}
                         <form action="/admin/prompt" method="POST">
                             <div class="form-group">
-                                <label for="prompt_text">Инструкции для Google Gemini:</label>
+                                <label for="prompt_text">Инструкции для Groq AI:</label>
                                 <textarea id="prompt_text" name="prompt_text" rows="12" required>{{ current_prompt }}</textarea>
                             </div>
                             <button type="submit" class="btn btn-primary">Сохранить Новый Промпт 💾</button>
