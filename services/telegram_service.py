@@ -3,7 +3,6 @@ import ssl
 import aiohttp
 from aiogram import Bot, Dispatcher
 from aiogram.client.session.aiohttp import AiohttpSession
-from aiogram.enums import ParseMode
 import config
 
 logger = logging.getLogger(__name__)
@@ -28,29 +27,27 @@ dp = Dispatcher()
 async def notify_admin_new_lead(lead_id: int, name: str, phone: str, email: str = None, company: str = None, message: str = None):
     """Sends immediate Telegram notification to admin when a new lead is submitted on website."""
     if not config.ADMIN_TELEGRAM_ID:
-        logger.warning("ADMIN_TELEGRAM_ID is not configured in .env. Skipping Telegram lead notification.")
+        logger.warning("ADMIN_TELEGRAM_ID is not configured in environment. Skipping Telegram lead notification.")
         return
 
-    notification_text = (
-        f"🚨 **НОВАЯ ЗАЯВКА С САЙТА №{lead_id}**\n\n"
-        f"👤 **Имя:** {name}\n"
-        f"📞 **Телефон:** `{phone}`\n"
-    )
-    if email:
-        notification_text += f"✉️ **Email:** {email}\n"
-    if company:
-        notification_text += f"🏢 **Компания:** {company}\n"
-    if message:
-        notification_text += f"💬 **Сообщение:**\n_{message}_\n"
+    email_str = email.strip() if email and email.strip() else "не указан"
+    company_str = company.strip() if company and company.strip() else "не указана"
+    message_str = message.strip() if message and message.strip() else "нет сообщения"
 
-    notification_text += f"\n📅 _Поступило в систему и сохранено в базе данных._"
+    notification_text = (
+        f"🔔 Новая заявка на сайте!\n"
+        f"👤 Имя: {name}\n"
+        f"📞 Телефон: {phone}\n"
+        f"📧 Email: {email_str}\n"
+        f"🏢 Компания: {company_str}\n"
+        f"📝 Сообщение: {message_str}"
+    )
 
     try:
         await bot.send_message(
             chat_id=config.ADMIN_TELEGRAM_ID,
-            text=notification_text,
-            parse_mode=ParseMode.MARKDOWN
+            text=notification_text
         )
         logger.info(f"Notification for lead #{lead_id} sent successfully to admin {config.ADMIN_TELEGRAM_ID}.")
     except Exception as e:
-        logger.error(f"Failed to send Telegram notification to admin for lead #{lead_id}: {e}")
+        logger.error(f"Failed to send Telegram notification to admin for lead #{lead_id}: {e}", exc_info=True)

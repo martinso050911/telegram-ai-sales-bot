@@ -191,8 +191,12 @@ async def create_lead(lead_data: LeadCreate, db: AsyncSession = Depends(get_db))
         db.add(new_lead)
         await db.commit()
         await db.refresh(new_lead)
+    except Exception as e:
+        logger.error(f"Error saving lead to database: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail="Ошибка при сохранении заявки")
 
-        # Send Telegram notification to admin
+    # Send Telegram notification to admin safely in a separate try-except block
+    try:
         await notify_admin_new_lead(
             lead_id=new_lead.id,
             name=new_lead.name,
@@ -201,11 +205,11 @@ async def create_lead(lead_data: LeadCreate, db: AsyncSession = Depends(get_db))
             company=new_lead.company,
             message=new_lead.message
         )
-
-        return {"success": True, "lead_id": new_lead.id, "message": "Заявка успешно создана!"}
     except Exception as e:
-        logger.error(f"Error creating lead: {e}")
-        raise HTTPException(status_code=500, detail="Ошибка при сохранении заявки")
+        logger.error(f"Telegram notification error caught (lead saved successfully): {e}", exc_info=True)
+
+    return {"success": True, "lead_id": new_lead.id, "message": "Заявка успешно создана!"}
+
 
 @web_router.post("/api/chat")
 async def chat_with_ai(chat_req: ChatRequest):
