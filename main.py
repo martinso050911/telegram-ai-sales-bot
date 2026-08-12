@@ -1,6 +1,5 @@
 import os
 import sys
-import asyncio
 import logging
 from pathlib import Path
 from contextlib import asynccontextmanager
@@ -11,9 +10,11 @@ if str(BASE_DIR) not in sys.path:
     sys.path.insert(0, str(BASE_DIR))
 
 import uvicorn
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
+from aiogram.types import Update
 
+import config
 from database.connection import init_db
 from services.telegram_service import bot, dp
 from bot.handlers import router as bot_router
@@ -30,37 +31,45 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
-bot_polling_task = None
+# Webhook path format: /webhook/{BOT_TOKEN}
+WEBHOOK_PATH = f"/webhook/{config.BOT_TOKEN}"
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    global bot_polling_task
     logger.info("Initializing B2B Web Service & Database...")
 
     # 1. Initialize SQLite Database Tables
     await init_db()
 
-    # 2. Register Telegram Router
+    # 2. Register Telegram Router with Dispatcher
     dp.include_router(bot_router)
 
-    # 3. Clear webhook and start Telegram bot long-polling in background asyncio task
-    try:
-        await bot.delete_webhook(drop_pending_updates=True)
-        bot_polling_task = asyncio.create_task(dp.start_polling(bot))
-        logger.info("Telegram Bot polling task launched successfully in background!")
-    except Exception as e:
-        logger.error(f"Failed to start Telegram Bot polling: {e}", exc_info=True)
+    # 3. Setup Telegram Webhook on startup if RENDER_EXTERNAL_URL is available
+    render_external_url = os.getenv("RENDER_EXTERNAL_URL")
+    if render_external_url:
+        base_url = render_external_url.rstrip("/")
+        webhook_url = f"{base_url}{WEBHOOK_PATH}"
+        try:
+            await bot.set_webhook(url=webhook_url, drop_pending_updates=True)
+            logger.info(f"Telegram Bot Webhook successfully configured at: {webhook_url}")
+        except Exception as e:
+            logger.error(f"Failed to set Telegram Webhook: {e}", exc_info=True)
+    else:
+        logger.warning(
+            "RENDER_EXTERNAL_URL is not set. Webhook automatic registration skipped. "
+            "Set RENDER_EXTERNAL_URL on Render environment variables to activate webhook."
+        )
 
     yield
 
     # Shutdown lifecycle
     logger.info("Shutting down B2B Web Service & Telegram Bot...")
-    if bot_polling_task:
-        bot_polling_task.cancel()
-        try:
-            await bot_polling_task
-        except asyncio.CancelledError:
-            pass
+    try:
+        await bot.delete_webhook(drop_pending_updates=False)
+        logger.info("Telegram Bot Webhook removed.")
+    except Exception as e:
+        logger.error(f"Error removing webhook during shutdown: {e}")
+
     try:
         await bot.session.close()
     except Exception as e:
@@ -72,6 +81,19 @@ app = FastAPI(
     title="AI Sales Pro B2B Service",
     lifespan=lifespan
 )
+
+# Webhook POST route for Telegram updates
+@app.post(WEBHOOK_PATH)
+async def bot_webhook(request: Request):
+    """Endpoint receiving POST updates from Telegram Webhook and feeding them to Aiogram."""
+    try:
+        data = await request.json()
+        update = Update.model_validate(data, context={"bot": bot})
+        await dp.feed_update(bot, update)
+        return {"status": "ok"}
+    except Exception as e:
+        logger.error(f"Error processing Telegram webhook update: {e}", exc_info=True)
+        return {"status": "error", "detail": str(e)}
 
 # Mount Static Files
 app.mount("/static", StaticFiles(directory=BASE_DIR / "static"), name="static")
