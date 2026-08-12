@@ -283,3 +283,43 @@ async def update_admin_prompt(
             "prompt_saved": True
         }
     )
+
+@web_router.post("/admin/status/{lead_id}")
+async def update_lead_status(
+    lead_id: int,
+    request: Request,
+    new_status: str = Form(...),
+    db: AsyncSession = Depends(get_db)
+):
+    """Updates status of a lead (role='admin' required)."""
+    current_user = await get_current_user(request, db)
+    if not current_user or current_user.role != "admin":
+        return RedirectResponse(url="/login?error=admin_required", status_code=303)
+
+    lead_res = await db.execute(select(Lead).where(Lead.id == lead_id))
+    lead = lead_res.scalar_one_or_none()
+    if lead:
+        lead.status = new_status
+        await db.commit()
+        logger.info(f"Lead #{lead_id} status updated to '{new_status}' by admin '{current_user.username}'.")
+    return RedirectResponse(url="/admin#leads-section", status_code=303)
+
+@web_router.post("/admin/delete/{lead_id}")
+async def delete_lead(
+    lead_id: int,
+    request: Request,
+    db: AsyncSession = Depends(get_db)
+):
+    """Deletes a lead from the database (role='admin' required)."""
+    current_user = await get_current_user(request, db)
+    if not current_user or current_user.role != "admin":
+        return RedirectResponse(url="/login?error=admin_required", status_code=303)
+
+    lead_res = await db.execute(select(Lead).where(Lead.id == lead_id))
+    lead = lead_res.scalar_one_or_none()
+    if lead:
+        await db.delete(lead)
+        await db.commit()
+        logger.info(f"Lead #{lead_id} deleted by admin '{current_user.username}'.")
+    return RedirectResponse(url="/admin#leads-section", status_code=303)
+
