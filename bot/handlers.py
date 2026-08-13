@@ -84,7 +84,7 @@ async def handle_contact_manager(event):
     """Sends contact phone number of sales department."""
     contact_text = (
         "📞 **Отдел продаж компании Sales Pro:**\n\n"
-        "• **Телефон:** `+998 (90) 000-00-00`\n"
+        "• **Телефон:** `+998 (77) 003 08 46`\n"
         "• **Email:** `contact@salespro.uz`\n"
         "• **График работы:** Пн — Сб, 09:00 — 18:00\n\n"
         "Наш старший менеджер ответит на все ваши вопросы и поможет с подключением!"
@@ -94,6 +94,7 @@ async def handle_contact_manager(event):
         await event.answer()
     else:
         await event.answer(contact_text, parse_mode=ParseMode.MARKDOWN)
+
 
 @router.message(F.text == "💼 Получить B2B консультацию")
 @router.message(F.text == "🎯 Подобрать тариф")
