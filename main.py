@@ -31,8 +31,8 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
-# Webhook path format: /webhook/{BOT_TOKEN}
-WEBHOOK_PATH = f"/webhook/{config.BOT_TOKEN}"
+# Webhook path constant: /webhook
+WEBHOOK_PATH = "/webhook"
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -44,7 +44,7 @@ async def lifespan(app: FastAPI):
     # 2. Register Telegram Router with Dispatcher
     dp.include_router(bot_router)
 
-    # 3. Setup Telegram Webhook on startup if RENDER_EXTERNAL_URL is available
+    # 3. Setup Telegram Webhook on startup using RENDER_EXTERNAL_URL
     render_external_url = os.getenv("RENDER_EXTERNAL_URL")
     if render_external_url:
         base_url = render_external_url.rstrip("/")
@@ -78,12 +78,13 @@ async def lifespan(app: FastAPI):
 
 # Instantiate FastAPI application
 app = FastAPI(
-    title="AI Sales Pro B2B Service",
+    title="Sales Pro B2B Service",
     lifespan=lifespan
 )
 
 # Webhook POST route for Telegram updates
-@app.post(WEBHOOK_PATH)
+@app.post("/webhook")
+@app.post(f"/webhook/{config.BOT_TOKEN}")
 async def bot_webhook(request: Request):
     """Endpoint receiving POST updates from Telegram Webhook and feeding them to Aiogram."""
     try:
@@ -98,13 +99,13 @@ async def bot_webhook(request: Request):
 # Mount Static Files
 app.mount("/static", StaticFiles(directory=BASE_DIR / "static"), name="static")
 
-# Include Web & API routes
+# Include Web & API routes (includes GET / landing page with 200 OK response)
 app.include_router(web_router)
 
 if __name__ == "__main__":
     host = os.getenv("HOST", "0.0.0.0")
     port = int(os.getenv("PORT", 8000))
-    logger.info(f"Starting B2B Web Application Server on http://{host}:{port} ...")
+    logger.info(f"Starting Sales Pro Web Application Server on http://{host}:{port} ...")
     uvicorn.run(
         "main:app",
         host=host,

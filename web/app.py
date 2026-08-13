@@ -45,6 +45,7 @@ async def get_current_user(request: Request, db: AsyncSession = Depends(get_db))
         return None
 
 @web_router.get("/", response_class=HTMLResponse)
+@web_router.head("/", response_class=HTMLResponse)
 async def render_landing_page(request: Request, db: AsyncSession = Depends(get_db)):
     """Renders B2B Responsive Landing Page with user context."""
     current_user = await get_current_user(request, db)
@@ -53,6 +54,7 @@ async def render_landing_page(request: Request, db: AsyncSession = Depends(get_d
         name="index.html",
         context={"current_user": current_user}
     )
+
 
 @web_router.get("/login", response_class=HTMLResponse)
 async def render_login_page(request: Request, error: Optional[str] = None, db: AsyncSession = Depends(get_db)):
