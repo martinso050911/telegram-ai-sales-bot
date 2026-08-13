@@ -51,12 +51,14 @@ async def lifespan(app: FastAPI):
         webhook_url = f"{base_url}{WEBHOOK_PATH}"
         try:
             await bot.set_webhook(url=webhook_url, drop_pending_updates=True)
-            logger.info(f"Telegram Bot Webhook successfully configured at: {webhook_url}")
+            log_msg = f"✅ Telegram Bot Webhook successfully set to: {webhook_url}"
+            logger.info(log_msg)
+            print(log_msg)
         except Exception as e:
             logger.error(f"Failed to set Telegram Webhook: {e}", exc_info=True)
     else:
         logger.warning(
-            "RENDER_EXTERNAL_URL is not set. Webhook automatic registration skipped. "
+            "RENDER_EXTERNAL_URL is not set in environment. Webhook automatic registration skipped. "
             "Set RENDER_EXTERNAL_URL on Render environment variables to activate webhook."
         )
 
@@ -86,15 +88,15 @@ app = FastAPI(
 @app.post("/webhook")
 @app.post(f"/webhook/{config.BOT_TOKEN}")
 async def bot_webhook(request: Request):
-    """Endpoint receiving POST updates from Telegram Webhook and feeding them to Aiogram."""
+    """Endpoint receiving POST updates from Telegram Webhook, feeding them to Aiogram, and returning {'ok': True}."""
     try:
         data = await request.json()
         update = Update.model_validate(data, context={"bot": bot})
         await dp.feed_update(bot, update)
-        return {"status": "ok"}
+        return {"ok": True}
     except Exception as e:
         logger.error(f"Error processing Telegram webhook update: {e}", exc_info=True)
-        return {"status": "error", "detail": str(e)}
+        return {"ok": False, "error": str(e)}
 
 # Mount Static Files
 app.mount("/static", StaticFiles(directory=BASE_DIR / "static"), name="static")
